@@ -1,0 +1,29 @@
+name: deploy github pages
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout
+        uses: actions/checkout@master
+      - name: Submodule Checkout
+        uses: jwsi/submodule-checkout@v1
+
+      - name: 2. setup nodejs...
+
+        uses: actions/setup-node@v1
+
+      - name: 3. install hexo..
+        run: |
+          npm install
+          npm run build
+
+      - name: deploy github pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          ACCESS_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist
