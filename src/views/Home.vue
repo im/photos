@@ -159,7 +159,7 @@ $h = 150px
     background #f3f3f3
     &:hover
         .el-button
-            display block
+           opacity 1
     .el-image
         width 100%
         height $h
@@ -172,9 +172,9 @@ $h = 150px
         z-index 999
         background #f3f3f3
     .el-button
-        display none
+        opacity 0
         position absolute
-        right 0
+        right 0px
         bottom 0
         z-index 1
         border-top-left-radius 4px!important
@@ -182,10 +182,11 @@ $h = 150px
         border-top-right-radius 0px!important
         border-bottom-left-radius 0px!important
         padding 4px!important
+        transition 0.3s
         &.download
             border-top-left-radius 0px!important
             border-top-right-radius 4px!important
-            left 0
+            left 0px
             bottom 0
             margin-left 0
 
@@ -194,6 +195,7 @@ $h = 150px
         transition 0.3s
         overflow hidden
         &:hover
+            opacity 0.9
             transform scale(1.1)
 @media only screen and (max-width: 900px)
     .item-img
