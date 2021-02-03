@@ -4,28 +4,27 @@
         v-infinite-scroll="load"
         infinite-scroll-disabled="disabled"
     >
-        <el-row :gutter="12">
-            <el-col
-                v-for="img in imgList"
-                :key="img.id"
-                :xs="6"
-                :sm="6"
-                :md="6"
-                :lg="6"
-                :xl="1"
-            >
-                <el-image
-                    class="img"
-                    :src="thumbnail(img.download_url)"
-                    lazy
-                    @click="copy(img)"
-                >
-                    <div slot="placeholder" class="image-slot">
-                        ...
-                    </div></el-image
-                ></el-col
-            >
-        </el-row>
+        <div class="item-img" v-for="img in imgList" :key="img.id">
+            <el-button
+                type="primary"
+                icon="el-icon-document-copy"
+                @click="copy(img)"
+                circle
+            ></el-button>
+            <a :href="getLink(img)" title="点击打开原图" target="_blank">
+                <el-image :src="thumbnail(img.download_url)" lazy>
+                    <div
+                        slot="placeholder"
+                        v-loading="true"
+                        element-loading-text="..."
+                        element-loading-spinner="el-icon-loading"
+                        element-loading-background="#f3f3f3"
+                        class="image-slot"
+                    ></div>
+                    <div>1111</div>
+                </el-image>
+            </a>
+        </div>
     </div>
 </template>
 
@@ -49,6 +48,11 @@ export default class Home extends Vue {
             const u = v.download_url.split('/id/')[0]
             return `${u}/id/${id}/${v.width}/${v.height}`
         })
+    }
+    private getLink(img: any) {
+        const id = img.download_url.split('/')[4]
+        const u = img.download_url.split('/id/')[0]
+        return `${u}/id/${id}/${img.width}/${img.height}`
     }
     private copy(img: any) {
         const input = document.createElement('input')
@@ -96,17 +100,60 @@ export default class Home extends Vue {
 }
 </script>
 <style lang="stylus">
+*
+    margin 0
+    padding 0
+    box-sizing: border-box;
+
 .home
     width 100vw
     height 100vh
     overflow-y auto
-    .el-row
-        min-height 200vh
-.img
-    width 100%
-    min-height 100px
+    overflow-x hidden
+    display flex
+    align-items center
+    flex-wrap: wrap;
+    padding 6px
+.item-img
+    width calc(25% - 12px)
+    margin 6px
+    height 160px
+    overflow hidden
     cursor pointer
+    border-radius 4px
     transition 0.3s
+    position relative
+    background #f3f3f3
     &:hover
-        transform scale(0.9)
+        .e-button
+            display block
+    .el-image
+        width 100%
+        height 160px
+    a
+        display block
+    .image-slot
+        width 100%
+        position absolute
+        height 160px
+        z-index 999
+        background #f3f3f3
+    .el-button
+        display block
+        position absolute
+        right 0
+        bottom 0
+        z-index 1
+        border-top-left-radius 4px!important
+        border-bottom-right-radius 0px!important
+        border-top-right-radius 0px!important
+        border-bottom-left-radius 0px!important
+        padding 4px!important
+        
+
+    img
+        transition 0.3s
+        overflow hidden
+        &:hover
+            transform scale(1.1)
 </style>
