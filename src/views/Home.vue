@@ -70,11 +70,11 @@ export default class Home extends Vue {
     private loading = false
     private imgList: any = []
     private page: any = 1
-    private limit: any = 50
+    private limit: any = 30
     private thumbnail(url: any) {
         const id = url.split('/')[4]
         const u = url.split('/id/')[0]
-        return u + '/id/' + id + '/400/200'
+        return u + '/id/' + id + '/300/150'
     }
     private async getList() {
         this.loading = true
@@ -100,6 +100,7 @@ export default class Home extends Vue {
 }
 </script>
 <style lang="stylus">
+$h = 150px
 *
     margin 0
     padding 0
@@ -114,9 +115,9 @@ export default class Home extends Vue {
     flex-wrap: wrap;
     padding 6px
 .item-img
-    width calc(25% - 12px)
+    width calc(20% - 12px)
     margin 6px
-    height 160px
+    height $h
     overflow hidden
     cursor pointer
     border-radius 4px
@@ -128,13 +129,13 @@ export default class Home extends Vue {
             display block
     .el-image
         width 100%
-        height 160px
+        height $h
     a
         display block
     .image-slot
         width 100%
         position absolute
-        height 160px
+        height $h
         z-index 999
         background #f3f3f3
     .el-button
@@ -148,11 +149,17 @@ export default class Home extends Vue {
         border-top-right-radius 0px!important
         border-bottom-left-radius 0px!important
         padding 4px!important
-        
+
 
     img
         transition 0.3s
         overflow hidden
         &:hover
             transform scale(1.1)
+@media only screen and (max-width: 900px)
+    .item-img
+        width calc(33.333333% - 12px)
+@media only screen and (max-width: 675px)
+    .item-img
+        width calc(50% - 12px)
 </style>
