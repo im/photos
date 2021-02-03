@@ -9,8 +9,18 @@
                 type="primary"
                 icon="el-icon-document-copy"
                 @click="copy(img)"
+                title="复制"
                 circle
             ></el-button>
+            <el-button
+                class="download"
+                type="success"
+                title="下载"
+                icon="el-icon-download"
+                @click="download(img)"
+                circle
+            ></el-button>
+
             <a :href="getLink(img)" title="点击打开原图" target="_blank">
                 <el-image :src="thumbnail(img.download_url)" lazy>
                     <div
@@ -49,6 +59,27 @@ export default class Home extends Vue {
             return `${u}/id/${id}/${v.width}/${v.height}`
         })
     }
+    private download(img: any) {
+        const imgsrc = this.getLink(img)
+        let image = new Image()
+        // 解决跨域 Canvas 污染问题
+        image.setAttribute('crossOrigin', 'anonymous')
+        image.onload = function() {
+            let canvas = document.createElement('canvas')
+            canvas.width = image.width
+            canvas.height = image.height
+            let context = canvas.getContext('2d') as any
+            context.drawImage(image, 0, 0, image.width, image.height)
+            let url = canvas.toDataURL('image/png') //得到图片的base64编码数据
+            console.log('url: ', url)
+            let a = document.createElement('a') // 生成一个a元素
+            let event = new MouseEvent('click') // 创建一个单击事件
+            a.download = `photo-${img.id}` // 设置图片名称
+            a.href = url // 将生成的URL设置为a.href属性
+            a.dispatchEvent(event) // 触发a的单击事件
+        }
+        image.src = imgsrc
+    }
     private getLink(img: any) {
         const id = img.download_url.split('/')[4]
         const u = img.download_url.split('/id/')[0]
@@ -62,9 +93,11 @@ export default class Home extends Vue {
         input.select()
         const res = document.execCommand('copy')
         document.body.removeChild(input)
-        this.$message({
-            message: '复制成功',
-            type: 'success'
+        this.$notify({
+            title: '复制成功',
+            message: '',
+            type: 'success',
+            duration: 2000
         })
     }
     private loading = false
@@ -125,7 +158,7 @@ $h = 150px
     position relative
     background #f3f3f3
     &:hover
-        .e-button
+        .el-button
             display block
     .el-image
         width 100%
@@ -139,7 +172,7 @@ $h = 150px
         z-index 999
         background #f3f3f3
     .el-button
-        display block
+        display none
         position absolute
         right 0
         bottom 0
@@ -149,6 +182,12 @@ $h = 150px
         border-top-right-radius 0px!important
         border-bottom-left-radius 0px!important
         padding 4px!important
+        &.download
+            border-top-left-radius 0px!important
+            border-top-right-radius 4px!important
+            left 0
+            bottom 0
+            margin-left 0
 
 
     img
