@@ -108,8 +108,7 @@ export default class Home extends Vue {
 .home
     width 100vw
     height 100vh
-    overflow-y auto
-    overflow-x hidden
+    overflow auto
     display flex
     align-items center
     flex-wrap: wrap;
