@@ -71,7 +71,6 @@ export default class Home extends Vue {
             let context = canvas.getContext('2d') as any
             context.drawImage(image, 0, 0, image.width, image.height)
             let url = canvas.toDataURL('image/png') //得到图片的base64编码数据
-            console.log('url: ', url)
             let a = document.createElement('a') // 生成一个a元素
             let event = new MouseEvent('click') // 创建一个单击事件
             a.download = `photo-${img.id}` // 设置图片名称
@@ -122,6 +121,7 @@ export default class Home extends Vue {
     }
 
     private mounted() {
+        this.page = this.$route.query.page || 1
         this.imgList = []
         this.getList()
     }
