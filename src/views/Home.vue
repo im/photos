@@ -16,6 +16,7 @@
                 class="download"
                 type="success"
                 title="下载"
+                :loading="loadingMap[img.id]"
                 icon="el-icon-download"
                 @click="download(img)"
                 circle
@@ -31,7 +32,6 @@
                         element-loading-background="#f3f3f3"
                         class="image-slot"
                     ></div>
-                    <div>1111</div>
                 </el-image>
             </a>
         </div>
@@ -46,6 +46,11 @@ import axios from 'axios'
     components: {}
 })
 export default class Home extends Vue {
+    private loading = false
+    private imgList: any = []
+    private page: any = 1
+    private limit: any = 30
+    private loadingMap = {}
     get disabled() {
         return this.loading
     }
@@ -59,23 +64,29 @@ export default class Home extends Vue {
             return `${u}/id/${id}/${v.width}/${v.height}`
         })
     }
+    private setLoadingMap(img: any, isLoading: Boolean) {
+        this.$set(this.loadingMap, img.id, isLoading)
+    }
     private download(img: any) {
         const imgsrc = this.getLink(img)
-        let image = new Image()
+        const image = new Image()
         // 解决跨域 Canvas 污染问题
         image.setAttribute('crossOrigin', 'anonymous')
-        image.onload = function() {
-            let canvas = document.createElement('canvas')
+        this.setLoadingMap(img, true)
+        image.onload = () => {
+            const canvas = document.createElement('canvas')
             canvas.width = image.width
             canvas.height = image.height
-            let context = canvas.getContext('2d') as any
+            const context = canvas.getContext('2d') as any
             context.drawImage(image, 0, 0, image.width, image.height)
-            let url = canvas.toDataURL('image/png') //得到图片的base64编码数据
-            let a = document.createElement('a') // 生成一个a元素
-            let event = new MouseEvent('click') // 创建一个单击事件
-            a.download = `photo-${img.id}` // 设置图片名称
-            a.href = url // 将生成的URL设置为a.href属性
-            a.dispatchEvent(event) // 触发a的单击事件
+            const url = canvas.toDataURL('image/png')
+            console.log('url: ', url)
+            const a = document.createElement('a')
+            const event = new MouseEvent('click')
+            a.download = `photo-${img.id}`
+            a.href = url
+            a.dispatchEvent(event)
+            this.setLoadingMap(img, false)
         }
         image.src = imgsrc
     }
@@ -99,10 +110,7 @@ export default class Home extends Vue {
             duration: 2000
         })
     }
-    private loading = false
-    private imgList: any = []
-    private page: any = 1
-    private limit: any = 30
+
     private thumbnail(url: any) {
         const id = url.split('/')[4]
         const u = url.split('/id/')[0]
@@ -173,7 +181,7 @@ $h = 150px
         background #f3f3f3
     .el-button
         opacity 0
-        position absolute
+        position absolute!important
         right 0px
         bottom 0
         z-index 1
@@ -183,6 +191,8 @@ $h = 150px
         border-bottom-left-radius 0px!important
         padding 4px!important
         transition 0.3s
+        &.is-loading
+            opacity 1!important
         &.download
             border-top-left-radius 0px!important
             border-top-right-radius 4px!important
