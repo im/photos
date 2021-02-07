@@ -80,7 +80,6 @@ export default class Home extends Vue {
             const context = canvas.getContext('2d') as any
             context.drawImage(image, 0, 0, image.width, image.height)
             const url = canvas.toDataURL('image/png')
-            console.log('url: ', url)
             const a = document.createElement('a')
             const event = new MouseEvent('click')
             a.download = `photo-${img.id}`
